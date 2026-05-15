@@ -454,8 +454,28 @@ textarea:focus {
   color: #ddd6fe;
 
   font-size: 0.88rem;
+
+  border: 1px solid
+    rgba(139, 92, 246, 0.2);
 }
 
+.due-badge.overdue {
+  background: rgba(239, 68, 68, 0.18);
+
+  color: #fca5a5;
+
+  border: 1px solid
+    rgba(239, 68, 68, 0.4);
+}
+
+.due-badge.soon {
+  background: rgba(245, 158, 11, 0.18);
+
+  color: #fcd34d;
+
+  border: 1px solid
+    rgba(245, 158, 11, 0.4);
+}
 .todo-actions {
   display: flex;
   flex-wrap: wrap;
