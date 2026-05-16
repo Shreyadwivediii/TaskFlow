@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 function Todo({ activePage, setActivePage }) {
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const [text, setText] = useState("");
   const [todos, setTodos] = useState([]);
 
@@ -11,8 +13,7 @@ function Todo({ activePage, setActivePage }) {
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
-  const [priorityFilter, setPriorityFilter] =
-    useState("All");
+  const [priorityFilter, setPriorityFilter] = useState("All");
 
   const [editId, setEditId] = useState(null);
 
@@ -27,27 +28,20 @@ function Todo({ activePage, setActivePage }) {
     }
 
     try {
-      const res = await fetch(
-        "http://localhost:5000/api/todo",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${API_URL}/api/todo`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(
-          data.message || "Unable to load tasks"
-        );
+        toast.error(data.message || "Unable to load tasks");
         return;
       }
 
-      setTodos(
-        Array.isArray(data.data) ? data.data : []
-      );
+      setTodos(Array.isArray(data.data) ? data.data : []);
     } catch (error) {
       toast.error("Server not reachable");
     }
@@ -60,8 +54,8 @@ function Todo({ activePage, setActivePage }) {
     }
 
     const url = editId
-      ? `http://localhost:5000/api/todo/${editId}`
-      : "http://localhost:5000/api/todo";
+      ? `${API_URL}/api/todo/${editId}`
+      : `${API_URL}/api/todo`;
 
     const method = editId ? "PUT" : "POST";
 
@@ -83,16 +77,12 @@ function Todo({ activePage, setActivePage }) {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(
-          data.message || "Something went wrong"
-        );
+        toast.error(data.message || "Something went wrong");
         return;
       }
 
       toast.success(
-        editId
-          ? "Task updated successfully"
-          : "Task added successfully"
+        editId ? "Task updated successfully" : "Task added successfully"
       );
 
       setText("");
@@ -111,22 +101,17 @@ function Todo({ activePage, setActivePage }) {
 
   const deleteTodo = async (id) => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/todo/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${API_URL}/api/todo/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(
-          data.message || "Unable to delete task"
-        );
+        toast.error(data.message || "Unable to delete task");
         return;
       }
 
@@ -140,22 +125,17 @@ function Todo({ activePage, setActivePage }) {
 
   const toggleTodo = async (id) => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/todo/${id}/toggle`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${API_URL}/api/todo/${id}/toggle`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(
-          data.message || "Unable to update task"
-        );
+        toast.error(data.message || "Unable to update task");
         return;
       }
 
@@ -171,12 +151,9 @@ function Todo({ activePage, setActivePage }) {
     loadTodos();
   }, []);
 
-  const completedTasks = todos.filter(
-    (t) => t.completed
-  ).length;
+  const completedTasks = todos.filter((t) => t.completed).length;
 
-  const pendingTasks =
-    todos.length - completedTasks;
+  const pendingTasks = todos.length - completedTasks;
 
   const highPriorityTasks = todos.filter(
     (t) => t.priority === "High"
@@ -193,8 +170,7 @@ function Todo({ activePage, setActivePage }) {
 
     const diffTime = due - today;
 
-    const diffDays =
-      diffTime / (1000 * 60 * 60 * 24);
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
     if (diffDays < 0) {
       return "overdue";
@@ -238,11 +214,7 @@ function Todo({ activePage, setActivePage }) {
         ? true
         : todo.priority === priorityFilter;
 
-    return (
-      matchesSearch &&
-      matchesStatus &&
-      matchesPriority
-    );
+    return matchesSearch && matchesStatus && matchesPriority;
   });
 
   return (
@@ -251,11 +223,7 @@ function Todo({ activePage, setActivePage }) {
         <div className="modal-overlay">
           <div className="modal-box">
             <div className="modal-header">
-              <h2>
-                {editId
-                  ? "Edit Task"
-                  : "Add New Task"}
-              </h2>
+              <h2>{editId ? "Edit Task" : "Add New Task"}</h2>
 
               <button
                 className="close-btn"
@@ -275,17 +243,13 @@ function Todo({ activePage, setActivePage }) {
             <div className="todo-controls">
               <input
                 value={text}
-                onChange={(e) =>
-                  setText(e.target.value)
-                }
+                onChange={(e) => setText(e.target.value)}
                 placeholder="Enter task"
               />
 
               <select
                 value={priority}
-                onChange={(e) =>
-                  setPriority(e.target.value)
-                }
+                onChange={(e) => setPriority(e.target.value)}
               >
                 <option>Low</option>
                 <option>Medium</option>
@@ -296,26 +260,17 @@ function Todo({ activePage, setActivePage }) {
                 type="text"
                 placeholder="Category"
                 value={category}
-                onChange={(e) =>
-                  setCategory(e.target.value)
-                }
+                onChange={(e) => setCategory(e.target.value)}
               />
 
               <input
                 type="date"
                 value={dueDate}
-                onChange={(e) =>
-                  setDueDate(e.target.value)
-                }
+                onChange={(e) => setDueDate(e.target.value)}
               />
 
-              <button
-                className="primary-button"
-                onClick={addTodo}
-              >
-                {editId
-                  ? "Update Task"
-                  : "Add Task"}
+              <button className="primary-button" onClick={addTodo}>
+                {editId ? "Update Task" : "Add Task"}
               </button>
             </div>
           </div>
@@ -350,17 +305,10 @@ function Todo({ activePage, setActivePage }) {
             type="text"
             placeholder="Search tasks"
             value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
+            onChange={(e) => setSearch(e.target.value)}
           />
 
-          <select
-            value={filter}
-            onChange={(e) =>
-              setFilter(e.target.value)
-            }
-          >
+          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
             <option>All</option>
             <option>Completed</option>
             <option>Pending</option>
@@ -368,9 +316,7 @@ function Todo({ activePage, setActivePage }) {
 
           <select
             value={priorityFilter}
-            onChange={(e) =>
-              setPriorityFilter(e.target.value)
-            }
+            onChange={(e) => setPriorityFilter(e.target.value)}
           >
             <option>All</option>
             <option>High</option>
@@ -382,9 +328,7 @@ function Todo({ activePage, setActivePage }) {
 
       {filteredTodos.length === 0 ? (
         <div className="page-card">
-          <p className="empty-state">
-            No tasks found
-          </p>
+          <p className="empty-state">No tasks found</p>
         </div>
       ) : (
         <ul className="todo-list">
@@ -392,34 +336,23 @@ function Todo({ activePage, setActivePage }) {
             <li key={t._id} className="todo-item">
               <div
                 style={{
-                  textDecoration: t.completed
-                    ? "line-through"
-                    : "none",
-
+                  textDecoration: t.completed ? "line-through" : "none",
                   opacity: t.completed ? 0.6 : 1,
                 }}
               >
                 <strong>{t.text}</strong>
 
                 <div className="task-badges">
-                  <div className="badge">
-                    {t.priority}
-                  </div>
+                  <div className="badge">{t.priority}</div>
 
-                  <div className="badge">
-                    {t.category}
-                  </div>
+                  <div className="badge">{t.category}</div>
 
                   {t.dueDate && (
                     <div
-                      className={`badge due-badge ${getDueStatus(
-                        t.dueDate
-                      )}`}
+                      className={`badge due-badge ${getDueStatus(t.dueDate)}`}
                     >
                       {getDueText(t.dueDate)}{" "}
-                      {new Date(
-                        t.dueDate
-                      ).toLocaleDateString()}
+                      {new Date(t.dueDate).toLocaleDateString()}
                     </div>
                   )}
                 </div>
@@ -428,13 +361,9 @@ function Todo({ activePage, setActivePage }) {
               <div className="todo-actions">
                 <button
                   className="primary-button"
-                  onClick={() =>
-                    toggleTodo(t._id)
-                  }
+                  onClick={() => toggleTodo(t._id)}
                 >
-                  {t.completed
-                    ? "Undo"
-                    : "Complete"}
+                  {t.completed ? "Undo" : "Complete"}
                 </button>
 
                 <button
@@ -444,11 +373,7 @@ function Todo({ activePage, setActivePage }) {
                     setPriority(t.priority);
                     setCategory(t.category);
 
-                    setDueDate(
-                      t.dueDate
-                        ? t.dueDate.slice(0, 10)
-                        : ""
-                    );
+                    setDueDate(t.dueDate ? t.dueDate.slice(0, 10) : "");
 
                     setEditId(t._id);
 
@@ -460,9 +385,7 @@ function Todo({ activePage, setActivePage }) {
 
                 <button
                   className="secondary-button"
-                  onClick={() =>
-                    deleteTodo(t._id)
-                  }
+                  onClick={() => deleteTodo(t._id)}
                 >
                   Delete
                 </button>

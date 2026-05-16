@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
 function Profile({ activePage, setActivePage }) {
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const [user, setUser] = useState(null);
 
   const token = localStorage.getItem("token");
@@ -17,7 +19,7 @@ function Profile({ activePage, setActivePage }) {
         return;
       }
 
-      const res = await fetch("http://localhost:5000/api/user/profile", {
+      const res = await fetch(`${API_URL}/api/user/profile`, {
         headers: {
           Authorization: "Bearer " + token,
         },

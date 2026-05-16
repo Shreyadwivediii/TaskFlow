@@ -1,45 +1,38 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const connectDB = require("./config/db");
 
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
+const todoRoutes = require("./routes/todo");
+
 const app = express();
-const cors = require("cors");
 
 app.use(cors());
-
 app.use(express.json());
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
+app.get("/", (req, res) => {
+  res.send("API Running");
+});
 
-const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
-
-const userRoutes = require("./routes/user");
 app.use("/api/user", userRoutes);
- 
-const todoRoutes = require("./routes/todo");
 app.use("/api/todo", todoRoutes);
-
-// Start server only after DB connects
 
 const startServer = async () => {
   try {
-    await connectDB(); // DB connect first
-
-    app.get("/", (req, res) => {
-      res.send("API Running 🚀");
-    });
+    await connectDB();
 
     app.listen(PORT, () => {
-      console.log("🔥 FILE IS RUNNING");
-     
+      console.log("FILE IS RUNNING");
       console.log(`Server running on port ${PORT}`);
     });
-
   } catch (error) {
-    console.log("❌ Server start error:", error);
+    console.log("Server start error:", error);
   }
 };
 

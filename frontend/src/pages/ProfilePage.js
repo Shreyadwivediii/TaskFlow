@@ -2,25 +2,20 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 function ProfilePage() {
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const [user, setUser] = useState(null);
-
   const [name, setName] = useState("");
 
   const token = localStorage.getItem("token");
 
   const fetchProfile = async () => {
-
     try {
-
-      const res = await fetch(
-        "http://localhost:5000/api/user/profile",
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
+      const res = await fetch(`${API_URL}/api/user/profile`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
 
       const data = await res.json();
 
@@ -29,15 +24,10 @@ function ProfilePage() {
       }
 
       setUser(data.user);
-
       setName(data.user.name);
-
     } catch (error) {
-
       console.log(error);
-
     }
-
   };
 
   useEffect(() => {
@@ -45,25 +35,19 @@ function ProfilePage() {
   }, []);
 
   const updateProfile = async () => {
-
     try {
+      const res = await fetch(`${API_URL}/api/user/update`, {
+        method: "PUT",
 
-      const res = await fetch(
-        "http://localhost:5000/api/user/update",
-        {
-          method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
 
-          headers: {
-            "Content-Type": "application/json",
-
-            Authorization: "Bearer " + token,
-          },
-
-          body: JSON.stringify({
-            name,
-          }),
-        }
-      );
+        body: JSON.stringify({
+          name,
+        }),
+      });
 
       const data = await res.json();
 
@@ -75,73 +59,45 @@ function ProfilePage() {
       toast.success("Profile updated");
 
       fetchProfile();
-
     } catch (error) {
-
       toast.error("Something went wrong");
-
     }
-
   };
 
   return (
     <div className="page-card profile-page">
-
       <div className="profile-header">
-
         <div className="profile-avatar large-avatar">
-
           {user?.name?.charAt(0).toUpperCase()}
-
         </div>
 
         <div>
-
           <h2>My Profile</h2>
 
-          <p>
-            Update your personal information
-          </p>
-
+          <p>Update your personal information</p>
         </div>
-
       </div>
 
       <div className="profile-fields">
-
         <div className="profile-field">
-
           <label>Name</label>
 
           <input
             value={name}
-            onChange={(e) =>
-              setName(e.target.value)
-            }
+            onChange={(e) => setName(e.target.value)}
           />
-
         </div>
 
         <div className="profile-field">
-
           <label>Email</label>
 
-          <input
-            value={user?.email || ""}
-            disabled
-          />
-
+          <input value={user?.email || ""} disabled />
         </div>
-
       </div>
 
-      <button
-        className="primary-button"
-        onClick={updateProfile}
-      >
+      <button className="primary-button" onClick={updateProfile}>
         Save Changes
       </button>
-
     </div>
   );
 }

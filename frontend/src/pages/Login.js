@@ -2,26 +2,32 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 function Login() {
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    const res = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      toast.success("Login successful!");
-      window.location.reload();
-    } else {
-      toast.error(data.message || "Login failed");
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        toast.success("Login successful!");
+        window.location.reload();
+      } else {
+        toast.error(data.message || "Login failed");
+      }
+    } catch (error) {
+      toast.error("Server not reachable");
     }
   };
 
@@ -43,10 +49,7 @@ function Login() {
         />
       </div>
 
-      <button
-        className="primary-button"
-        onClick={handleLogin}
-      >
+      <button className="primary-button" onClick={handleLogin}>
         Login
       </button>
 

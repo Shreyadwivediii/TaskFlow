@@ -2,21 +2,33 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 function Signup() {
+  const API_URL = process.env.REACT_APP_API_URL;
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSignup = async () => {
-    const res = await fetch("http://localhost:5000/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, email, password }),
-    });
+    try {
+      const res = await fetch(`${API_URL}/api/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
 
-    const data = await res.json();
-    toast.success(data.message);
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message || "Signup failed");
+        return;
+      }
+
+      toast.success(data.message || "Signup successful");
+    } catch (error) {
+      toast.error("Server not reachable");
+    }
   };
 
   return (
@@ -43,10 +55,7 @@ function Signup() {
         />
       </div>
 
-      <button
-        className="primary-button"
-        onClick={handleSignup}
-      >
+      <button className="primary-button" onClick={handleSignup}>
         Signup
       </button>
 
