@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Todo from "./pages/Todo";
 import ProfilePage from "./pages/ProfilePage";
+import Home from "./pages/Home";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -56,6 +57,10 @@ function App() {
             {activePage === "profile" ? (
 
               <ProfilePage />
+
+            ) : activePage === "home" ? (
+
+              <Home />
 
             ) : (
 

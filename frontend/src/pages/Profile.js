@@ -76,6 +76,17 @@ function Profile({ activePage, setActivePage }) {
 
           <button
             className={
+              activePage === "home"
+                ? "sidebar-link active-link"
+                : "sidebar-link"
+            }
+            onClick={() => setActivePage("home")}
+          >
+            Home
+          </button>
+
+          <button
+            className={
               activePage === "add"
                 ? "sidebar-link active-link"
                 : "sidebar-link"
