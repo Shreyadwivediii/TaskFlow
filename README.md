@@ -63,9 +63,8 @@ node server.js
 Create a `.env` file inside Backend folder and add:
 
 ```env
-MONGO_URI=mongodb://127.0.0.1:27017/myapp
-JWT_SECRET=your_jwt_secret
-PORT=5000
+JWT_SECRET=your_jwt_secret_key
+MONGO_URI=your_mongodb_connection_string
 ```
 
 ---
