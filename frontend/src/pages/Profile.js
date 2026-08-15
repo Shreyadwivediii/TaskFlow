@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
-function Profile({ activePage, setActivePage }) {
+function Profile() {
   const API_URL = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
 
@@ -9,6 +11,7 @@ function Profile({ activePage, setActivePage }) {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    navigate("/login");
     window.location.reload();
   };
 
@@ -65,49 +68,41 @@ function Profile({ activePage, setActivePage }) {
         </div>
 
         <nav className="sidebar-menu">
-          <button
-            className={
-              activePage === "dashboard"
-                ? "sidebar-link active-link"
-                : "sidebar-link"
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active-link" : "sidebar-link"
             }
-            onClick={() => setActivePage("dashboard")}
           >
             Dashboard
-          </button>
+          </NavLink>
 
-          <button
-            className={
-              activePage === "home"
-                ? "sidebar-link active-link"
-                : "sidebar-link"
+          <NavLink
+            to="/home"
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active-link" : "sidebar-link"
             }
-            onClick={() => setActivePage("home")}
           >
             Home
-          </button>
+          </NavLink>
 
-          <button
-            className={
-              activePage === "add"
-                ? "sidebar-link active-link"
-                : "sidebar-link"
+          <NavLink
+            to="/add-task"
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active-link" : "sidebar-link"
             }
-            onClick={() => setActivePage("add")}
           >
             Add Task
-          </button>
+          </NavLink>
 
-          <button
-            className={
-              activePage === "profile"
-                ? "sidebar-link active-link"
-                : "sidebar-link"
+          <NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active-link" : "sidebar-link"
             }
-            onClick={() => setActivePage("profile")}
           >
             Profile
-          </button>
+          </NavLink>
         </nav>
       </div>
 

@@ -1,13 +1,17 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function Login() {
   const API_URL = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
     try {
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
@@ -22,6 +26,7 @@ function Login() {
       if (data.token) {
         localStorage.setItem("token", data.token);
         toast.success("Login successful!");
+        navigate("/dashboard");
         window.location.reload();
       } else {
         toast.error(data.message || "Login failed");
@@ -32,7 +37,7 @@ function Login() {
   };
 
   return (
-    <div className="page-card">
+    <form className="page-card" onSubmit={handleLogin}>
       <h2>Welcome Back</h2>
 
       <div className="field-group">
@@ -49,14 +54,14 @@ function Login() {
         />
       </div>
 
-      <button className="primary-button" onClick={handleLogin}>
+      <button className="primary-button" type="submit">
         Login
       </button>
 
       <p className="card-note">
-        Continue organizing your productivity.
+        New to TaskFlow? <Link to="/signup">Create an account</Link>
       </p>
-    </div>
+    </form>
   );
 }
 

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-function Todo({ activePage, setActivePage }) {
+function Todo({ showForm = false }) {
   const API_URL = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
 
   const [text, setText] = useState("");
   const [todos, setTodos] = useState([]);
@@ -18,6 +20,14 @@ function Todo({ activePage, setActivePage }) {
   const [editId, setEditId] = useState(null);
 
   const token = localStorage.getItem("token");
+
+  const resetForm = () => {
+    setText("");
+    setPriority("Medium");
+    setCategory("General");
+    setDueDate("");
+    setEditId(null);
+  };
 
   const loadTodos = async () => {
     const token = localStorage.getItem("token");
@@ -85,13 +95,8 @@ function Todo({ activePage, setActivePage }) {
         editId ? "Task updated successfully" : "Task added successfully"
       );
 
-      setText("");
-      setPriority("Medium");
-      setCategory("General");
-      setDueDate("");
-      setEditId(null);
-
-      setActivePage("dashboard");
+      resetForm();
+      navigate("/dashboard");
 
       loadTodos();
     } catch (error) {
@@ -219,7 +224,7 @@ function Todo({ activePage, setActivePage }) {
 
   return (
     <div className="todo-page">
-      {activePage === "add" && (
+      {showForm && (
         <div className="modal-overlay">
           <div className="modal-box">
             <div className="modal-header">
@@ -228,12 +233,8 @@ function Todo({ activePage, setActivePage }) {
               <button
                 className="close-btn"
                 onClick={() => {
-                  setActivePage("dashboard");
-                  setEditId(null);
-                  setText("");
-                  setPriority("Medium");
-                  setCategory("General");
-                  setDueDate("");
+                  resetForm();
+                  navigate("/dashboard");
                 }}
               >
                 ×
@@ -377,7 +378,7 @@ function Todo({ activePage, setActivePage }) {
 
                     setEditId(t._id);
 
-                    setActivePage("add");
+                    navigate("/add-task");
                   }}
                 >
                   Edit

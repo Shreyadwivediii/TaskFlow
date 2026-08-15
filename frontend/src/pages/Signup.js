@@ -1,14 +1,18 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function Signup() {
   const API_URL = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignup = async () => {
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
     try {
       const res = await fetch(`${API_URL}/api/auth/signup`, {
         method: "POST",
@@ -26,13 +30,14 @@ function Signup() {
       }
 
       toast.success(data.message || "Signup successful");
+      navigate("/login");
     } catch (error) {
       toast.error("Server not reachable");
     }
   };
 
   return (
-    <div className="page-card">
+    <form className="page-card" onSubmit={handleSignup}>
       <h2>Create Account</h2>
 
       <div className="field-group">
@@ -55,14 +60,14 @@ function Signup() {
         />
       </div>
 
-      <button className="primary-button" onClick={handleSignup}>
+      <button className="primary-button" type="submit">
         Signup
       </button>
 
       <p className="card-note">
-        Start managing your tasks efficiently.
+        Already have an account? <Link to="/login">Login</Link>
       </p>
-    </div>
+    </form>
   );
 }
 
